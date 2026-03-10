@@ -80,12 +80,14 @@ export const i18n: Record<Lang, Record<string, string>> = {
     "quickstart.hintLink": "문서",
     "quickstart.hintAfter":
       "를 참조하여 딩딩, 페이슈, QQ 등에서 CoPaw를 사용해 보세요.",
-    "quickstart.method.pip": "pip",
+    "quickstart.method.pip": "pip / GitHub",
     "quickstart.method.script": "스크립트 설치",
     "quickstart.method.docker": "Docker",
     "quickstart.method.cloud": "클라우드 배포",
     "quickstart.method.desktop": "데스크톱 앱",
-    "quickstart.desc.pip": "Python 환경을 직접 관리하는 사용자에게 적합합니다.",
+    "quickstart.desc.pip": "수정한 한국어 버전을 직접 설치하려면 'GitHub (권장)' 탭을, 원본 버전을 설치하려면 'pip' 탭을 사용하세요.",
+    "quickstart.desc.pip.origin": "원본 copaw 패키지를 설치합니다 (영문/중문 기본 환경).",
+    "quickstart.desc.pip.github": "수정한 한국어 버전(CoPaw-Kr)을 GitHub에서 직접 설치합니다 (가장 최신 한글화 적용).",
     "quickstart.desc.script":
       "Python을 직접 설정할 필요 없이 한 줄의 명령어로 설치를 완료합니다. 스크립트가 uv(Python 패키지 관리자)를 다운로드하고 가상 환경 생성, CoPaw 및 의존성(Node.js 및 프론트엔드 리소스 포함) 설치를 자동으로 수행합니다. 주의: 일부 네트워크 환경이나 기업 보안 정책에 따라 사용이 제한될 수 있습니다.",
     "quickstart.desc.docker":
