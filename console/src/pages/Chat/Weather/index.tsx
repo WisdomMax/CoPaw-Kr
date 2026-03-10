@@ -137,11 +137,11 @@ const WeatherIcon = ({
 const getWeatherLabel = (type: string) => {
   switch (type) {
     case "sunny":
-      return "晴朗";
+      return "맑음";
     case "rainy":
-      return "雨天";
+      return "비";
     case "cloudy":
-      return "多云";
+      return "흐림";
     default:
       return type;
   }
@@ -179,7 +179,7 @@ export default function Weather(props: {
           </Typography.Text>
           <br />
           <Typography.Text className={styles.date}>
-            {dayjs(current.date).format("MM月DD日 dddd")}
+            {dayjs(current.date).format("MM월 DD일 dddd")}
           </Typography.Text>
         </div>
       </div>

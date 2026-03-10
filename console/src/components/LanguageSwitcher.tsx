@@ -20,13 +20,18 @@ export default function LanguageSwitcher() {
       onClick: () => changeLanguage("en"),
     },
     {
+      key: "ko",
+      label: "한국어",
+      onClick: () => changeLanguage("ko"),
+    },
+    {
       key: "ru",
       label: "Русский",
       onClick: () => changeLanguage("ru"),
     },
     {
       key: "zh",
-      label: "简体中文",
+      label: "중국어 간체",
       onClick: () => changeLanguage("zh"),
     },
     {
@@ -37,9 +42,10 @@ export default function LanguageSwitcher() {
   ];
 
   const languageLabels: Record<string, string> = {
+    ko: "한국어",
     en: "English",
     ru: "Русский",
-    zh: "简体中文",
+    zh: "중국어 간체",
     ja: "日本語",
   };
 

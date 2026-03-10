@@ -1,74 +1,138 @@
 ---
 name: pptx
-description: "Use this skill any time a .pptx file is involved in any way — as input, output, or both. This includes: creating slide decks, pitch decks, or presentations; reading, parsing, or extracting text from any .pptx file (even if the extracted content will be used elsewhere, like in an email or summary); editing, modifying, or updating existing presentations; combining or splitting slide files; working with templates, layouts, speaker notes, or comments. Trigger whenever the user mentions \"deck,\" \"slides,\" \"presentation,\" or references a .pptx filename, regardless of what they plan to do with the content afterward. If a .pptx file needs to be opened, created, or touched, use this skill."
+description: "사용자가 PowerPoint 프레젠테이션(.pptx 파일)을 생성, 읽기, 편집 또는 조작하기를 원할 때 이 스킬을 사용하세요. 실행 트리거: \"PPT\", \"파워포인트\", \".pptx\" 언급, 또는 슬라이드 쇼 제작, 발표 자료 준비 요청. 또한 .pptx 파일의 슬라이드 내용 추출, 기존 프레젠테이션 편집, 새로운 슬라이드 추가, 슬라이드를 이미지로 변환, 또는 세련된 레이아웃과 디자인이 포함된 전문적인 PPT 제작 시에도 사용합니다. 사용자가 \"발표 자료\", \"슬라이드 데크\", \"피치 덱\" 등을 PPT나 .pptx 파일로 요청하면 이 스킬을 활용하세요. PDF, 워드 문서, 스프레드시트 또는 문서 생성과 관련 없는 일반 코딩 작업에는 사용하지 마세요."
 license: Proprietary. LICENSE.txt has complete terms
 ---
 
-# PPTX Skill
+# PPTX 생성, 편집 및 분석 가이드
 
-## Runtime Dependencies
+## 런타임 의존성 (Dependencies)
 
-- Requires LibreOffice (`soffice`) for presentation-to-PDF conversion.
-- Requires Poppler (`pdftoppm`) for PDF-to-image conversion used by thumbnail/visual workflows.
-- If `pdftoppm` is unavailable, a Python fallback path may use `pdf2image`.
-- On Windows, dependencies must be installed and available in `PATH`; if missing, report the dependency issue and stop (do not keep retrying).
+- 문서-이미지 변환(슬라이드 미리보기) 워크플로우를 위해 LibreOffice(`soffice`)와 Poppler(`pdftoppm`)가 필요합니다.
+- `pdftoppm`을 사용할 수 없는 경우, Python의 `pdf2image`를 대체 경로로 사용할 수 있습니다.
+- Windows의 경우, 의존성 도구들이 설치되어 있고 `PATH`에 등록되어 있어야 합니다. 누락된 경우 문제를 보고하고 중단하세요(반복 재시도 금지).
 
-## Quick Reference
+## 개요
 
-| Task | Guide |
-|------|-------|
-| Read/analyze content | `python -m markitdown presentation.pptx` |
-| Edit or create from template | Read [editing.md](editing.md) |
-| Create from scratch | Read [pptxgenjs.md](pptxgenjs.md) |
+.pptx 파일은 XML 파일들을 포함하고 있는 ZIP 아카이브입니다.
 
----
+## 빠른 참조 (Quick Reference)
 
-## Reading Content
+| 작업 | 접근 방식 |
+|------|----------|
+| 내용 읽기/분석 | `python-pptx` 사용 또는 원본 XML 추출 |
+| 기존 문서 편집 | `python-pptx` 사용 또는 [편집 워크플로우] 참조 |
+| 새 문서 생성 | `pptxgenjs` 사용 - 아래 [새 라이브러리로 생성] 참조 |
+
+### 내용 읽기 (Python)
+
+```python
+from pptx import Presentation
+
+prs = Presentation('presentation.pptx')
+for slide in prs.slides:
+    for shape in slide.shapes:
+        if hasattr(shape, "text"):
+            print(shape.text)
+```
+
+### 이미지로 변환
 
 ```bash
-# Text extraction
-python -m markitdown presentation.pptx
-
-# Visual overview
-python scripts/thumbnail.py presentation.pptx
-
-# Raw XML
-python scripts/office/unpack.py presentation.pptx unpacked/
+python scripts/office/soffice.py --headless --convert-to pdf document.pptx
+pdftoppm -jpeg -r 150 document.pdf page
 ```
 
 ---
 
-## Editing Workflow
+## 편집 워크플로우 (압축 해제 기반)
 
-**Read [editing.md](editing.md) for full details.**
+**아래 3단계를 순서대로 따르세요.**
 
-1. Analyze template with `thumbnail.py`
-2. Unpack → manipulate slides → edit content → clean → pack
+### 1단계: 압축 해제 (Unpack)
+```bash
+python scripts/office/unpack.py document.pptx unpacked/
+```
+XML을 추출하고 가독성을 위해 자동 줄바꿈을 적용합니다.
+
+### 2단계: XML 편집
+`unpacked/ppt/slides/` 내의 슬라이드 XML 파일들을 수정하세요.
+
+### 3단계: 다시 압축 (Pack)
+```bash
+python scripts/office/pack.py unpacked/ output.pptx --original document.pptx
+```
+XML을 다시 압축하여 PPTX를 생성합니다.
 
 ---
 
-## Creating from Scratch
+## 새 라이브러리로 생성 (Generating from Scratch)
 
-**Read [pptxgenjs.md](pptxgenjs.md) for full details.**
+전문적인 프레젠테이션 생성을 위해 JavaScript 라이브러리 `pptxgenjs`를 사용하세요.
 
-Use when no template or reference presentation is available.
+### 설치 및 설정
+```bash
+npm install pptxgenjs
+```
+
+### 기본 사용법
+```javascript
+const pptxgen = require("pptxgenjs");
+let pres = new pptxgen();
+
+let slide = pres.addSlide();
+slide.addText("Hello World!", { x: 1, y: 1, color: "363636" });
+
+pres.writeFile({ fileName: "Sample.pptx" });
+```
+
+### 디자인 아이디어 및 원칙
+
+고품질의 전문적인 프레젠테이션을 만들기 위해 다음 지침을 따르세요.
+
+#### 1. 색상 팔레트 (Color Palette)
+일관된 색상 조합을 사용하세요.
+- **배경**: 흰색(`FFFFFF`) 또는 아주 연한 회색(`F2F2F2`)
+- **기본 텍스트**: 진한 회색(`363636`) - 순수 검정보다는 부드럽습니다.
+- **강조색**: 브랜드 색상 (예: 세련된 파란색 `007BFF`, 따뜻한 주황색 `FF5733`)
+- **보조색**: 강조색의 연한 버전 (데이터 시각화 등에 사용)
+
+#### 2. 타이포그래피 (Typography)
+- **폰트**: 가독성이 높은 고딕체(Sans-serif)를 권장합니다 (예: Arial, Calibri, 본고딕).
+- **크기**:
+  - 제목: 32pt 이상
+  - 본문: 18pt 이상 (발표용), 12pt 이상 (배포용)
+- **정렬**: 슬라이드 전체에서 일관된 정렬(주로 왼쪽 정렬)을 유지하세요.
+
+#### 3. 레이아웃과 간격 (Layout & Spacing)
+- **여백(White Space)**: 슬라이드를 텍스트로 꽉 채우지 마세요. 넉넉한 여백이 가독성을 높입니다.
+- **그리드**: 요소들을 일직선으로 정렬하여 질서를 부여하세요.
+- **시각적 계층**: 크기와 색상을 조절하여 가장 중요한 정보를 먼저 보게 하세요.
+
+#### 4. 전문적인 슬라이드 구성 예시
+- **표지**: 큰 제목, 부제목, 로고, 날짜, 작성자
+- **목차**: 깔끔한 리스트와 아이콘 사용
+- **본문 슬라이드**: 
+  - 상단: 명확한 슬라이드 제목
+  - 중앙: 핵심 메시지 (그래프, 이미지, 또는 3~5개의 불릿 포인트)
+  - 하단: 페이지 번호, 간단한 하단 영역(Footer)
+
+### 품질 확인(QA) 절차
+
+파일을 생성한 후에는 반드시 다음 사항을 확인하세요:
+1. 모든 슬라이드에서 텍스트가 겹치지 않는가?
+2. 색상 대비가 충분하여 글자가 잘 보이는가?
+3. 이미지의 비율이 깨지지 않았는가?
+4. 오타나 맞춤법 오류는 없는가? (한국어 맞춤법 주의)
 
 ---
 
-## Design Ideas
+## 주요 도구 요약
 
-**Don't create boring slides.** Plain bullets on a white background won't impress anyone. Consider ideas from this list for each slide.
-
-### Before Starting
-
-- **Pick a bold, content-informed color palette**: The palette should feel designed for THIS topic. If swapping your colors into a completely different presentation would still "work," you haven't made specific enough choices.
-- **Dominance over equality**: One color should dominate (60-70% visual weight), with 1-2 supporting tones and one sharp accent. Never give all colors equal weight.
-- **Dark/light contrast**: Dark backgrounds for title + conclusion slides, light for content ("sandwich" structure). Or commit to dark throughout for a premium feel.
-- **Commit to a visual motif**: Pick ONE distinctive element and repeat it — rounded image frames, icons in colored circles, thick single-side borders. Carry it across every slide.
-
-### Color Palettes
-
-Choose colors that match your topic — don't default to generic blue. Use these palettes as inspiration:
+- **pptxgenjs**: JavaScript 기반의 강력한 PPT 생성 도구
+- **python-pptx**: Python 기반의 읽기 및 간단한 편집 도구
+- **LibreOffice**: PDF 변환 및 미리보기 생성용
+- **Poppler**: PDF를 이미지로 변환하여 슬라이드 샘플 확인용
 
 | Theme | Primary | Secondary | Accent |
 |-------|---------|-----------|--------|

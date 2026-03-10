@@ -151,6 +151,35 @@ docker run -p 127.0.0.1:8088:8088 -v copaw-data:/app/working agentscope/copaw:la
 \`\`\`
 
 After upgrading, restart the service with \`copaw app\`.`,
+
+  ko: `### CoPaw 업데이트 방법
+
+CoPaw를 최신 버전으로 업데이트하려면 설치 방식에 맞는 방법을 선택하세요:
+
+1. 원클릭 설치 스크립트를 사용한 경우, 설치 명령을 다시 실행하면 자동으로 업그레이드됩니다.
+
+2. pip를 통해 설치한 경우, 터미널에서 다음 명령을 실행하여 업그레이드하세요:
+
+\`\`\`
+pip install --upgrade copaw
+\`\`\`
+
+3. 소스 코드에서 설치한 경우, 프로젝트 디렉토리에서 최신 코드를 가져온 후 다시 설치하세요:
+
+\`\`\`
+cd CoPaw
+git pull origin main
+pip install -e .
+\`\`\`
+
+4. Docker를 사용하는 경우, 최신 이미지를 가져와 컨테이너를 재시작하세요:
+
+\`\`\`
+docker pull agentscope/copaw:latest
+docker run -p 127.0.0.1:8088:8088 -v copaw-data:/app/working agentscope/copaw:latest
+\`\`\`
+
+업그레이드 후 \`copaw app\` 명령으로 서비스를 재시작하세요.`,
 };
 
 interface SidebarProps {
@@ -177,9 +206,8 @@ function CopyButton({ text }: { text: string }) {
         size="small"
         icon={copied ? <Check size={13} /> : <Copy size={13} />}
         onClick={handleCopy}
-        className={`${styles.copyBtn} ${
-          copied ? styles.copyBtnCopied : styles.copyBtnDefault
-        }`}
+        className={`${styles.copyBtn} ${copied ? styles.copyBtnCopied : styles.copyBtnDefault
+          }`}
       />
     </Tooltip>
   );
@@ -206,7 +234,7 @@ export default function Sidebar({ selectedKey }: SidebarProps) {
     api
       .getVersion()
       .then((res) => setVersion(res?.version ?? ""))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -236,7 +264,7 @@ export default function Sidebar({ selectedKey }: SidebarProps) {
         setAllVersions(versions);
         setLatestVersion(latest);
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const hasUpdate =
@@ -248,11 +276,13 @@ export default function Sidebar({ selectedKey }: SidebarProps) {
   const handleOpenUpdateModal = () => {
     setUpdateMarkdown("");
     setUpdateModalOpen(true);
-    const lang = i18n.language?.startsWith("zh")
-      ? "zh"
-      : i18n.language?.startsWith("ru")
-      ? "ru"
-      : "en";
+    const lang = i18n.language?.startsWith("ko")
+      ? "ko"
+      : i18n.language?.startsWith("zh")
+        ? "zh"
+        : i18n.language?.startsWith("ru")
+          ? "ru"
+          : "en";
     const faqLang = lang === "zh" ? "zh" : "en";
     const url = `https://copaw.agentscope.io/docs/faq.${faqLang}.md`;
     fetch(url, { cache: "no-cache" })
@@ -357,11 +387,10 @@ export default function Sidebar({ selectedKey }: SidebarProps) {
             {version && (
               <Badge dot={!!hasUpdate} color="red" offset={[4, 18]}>
                 <span
-                  className={`${styles.versionBadge} ${
-                    hasUpdate
+                  className={`${styles.versionBadge} ${hasUpdate
                       ? styles.versionBadgeClickable
                       : styles.versionBadgeDefault
-                  }`}
+                    }`}
                   onClick={() => hasUpdate && handleOpenUpdateModal()}
                 >
                   v{version}

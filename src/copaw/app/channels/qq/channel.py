@@ -92,7 +92,7 @@ def _sanitize_qq_text(text: str) -> tuple[str, bool]:
     """
     if not text:
         return "", False
-    sanitized, count = _URL_PATTERN.subn("[链接已省略]", text)
+    sanitized, count = _URL_PATTERN.subn("[링크가 생략되었습니다]", text)
     return sanitized, count > 0
 
 

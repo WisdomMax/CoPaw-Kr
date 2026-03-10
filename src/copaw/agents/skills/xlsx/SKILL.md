@@ -1,8 +1,133 @@
 ---
 name: xlsx
-description: "Use this skill any time a spreadsheet file is the primary input or output. This means any task where the user wants to: open, read, edit, or fix an existing .xlsx, .xlsm, .csv, or .tsv file (e.g., adding columns, computing formulas, formatting, charting, cleaning messy data); create a new spreadsheet from scratch or from other data sources; or convert between tabular file formats. Trigger especially when the user references a spreadsheet file by name or path — even casually (like \"the xlsx in my downloads\") — and wants something done to it or produced from it. Also trigger for cleaning or restructuring messy tabular data files (malformed rows, misplaced headers, junk data) into proper spreadsheets. The deliverable must be a spreadsheet file. Do NOT trigger when the primary deliverable is a Word document, HTML report, standalone Python script, database pipeline, or Google Sheets API integration, even if tabular data is involved."
+description: "사용자가 Excel 스프레드시트(.xlsx, .xlsm, .csv, .tsv 파일)를 생성, 읽기, 편집 또는 조작하기를 원할 때 이 스킬을 사용하세요. 실행 트리거: \"엑셀\", \"스프레드시트\", \".xlsx\", \".csv\" 언급, 또는 데이터 분석, 재무 모델링, 차트 생성 요청. 또한 데이터 추출, 수식 추가, 셀 서식 지정, 대량의 데이터 처리, 또는 전문적인 보고서용 엑셀 파일 제작 시에도 사용합니다. 사용자가 \"매출 보고서\", \"데이터 정리\", \"재무 제표\" 등을 엑셀이나 .xlsx 파일로 요청하면 이 스킬을 활용하세요."
 license: Proprietary. LICENSE.txt has complete terms
 ---
+
+# XLSX 생성, 편집 및 분석 가이드
+
+## 출력물 요구사항 (Output Requirements)
+
+전문적인 피드백을 유지하기 위해 다음 지침을 엄격히 준수하세요.
+
+### 1. 폰트 및 가독성
+- **기본 폰트**: 맑은 고딕(Malgun Gothic) 또는 Arial, 10pt 또는 11pt.
+- **제목**: 굵게(Bold), 배경색 지정(연한 파란색 또는 회색).
+- **정렬**: 텍스트는 왼쪽 정합, 숫자는 오른쪽 정합.
+
+### 2. 수식 및 오류 방지
+- **#REF!, #VALUE!, #DIV/0!** 오류가 절대 발생하지 않도록 하세요.
+- 복잡한 수식에는 `IFERROR`를 사용하여 깔끔하게 처리하세요 (예: `=IFERROR(A1/B1, 0)`).
+- 원시 데이터(Raw data)와 계산 영역을 시트로 명확히 구분하세요.
+
+### 3. 서식 및 템플릿 유지
+- 기존 엑셀 파일을 편집할 때 사용자의 스타일, 테마, 명명된 범위(Named Ranges) 등을 파괴하지 마세요.
+- 전문적인 재무 모델링 표준을 따르세요 (아래 참조).
+
+---
+
+## 재무 모델링 표준 (Financial Modeling Standards)
+
+세련된 엑셀 파일을 위해 다음 색상 코딩과 서식을 사용하세요.
+
+### 1. 색상 코딩 (Color Coding)
+- **파란색 (Blue)**: 입력값 (Inputs/Hardcodes) - 사용자가 직접 입력해야 하는 값.
+- **검정색 (Black)**: 수식 (Formulas) - 같은 시트 내의 참조.
+- **초록색 (Green)**: 시트 간 참조 (Cross-sheet references).
+- **빨간색 (Red)**: 주의 사항 또는 의존성 오류.
+
+### 2. 숫자 서식 (Number Formatting)
+- **통화**: 원화(`₩`) 또는 달러(`$`) 기호를 일관되게 사용하고 천 단위 구분 기호(`,`)를 넣으세요.
+- **비율**: 백분율(`%`)을 사용하고 소수점 자릿수를 통일하세요.
+- **날짜**: `YYYY-MM-DD` 형식을 권장합니다 (예: 2025-01-01).
+
+---
+
+## XLSX 생성 및 편집 워크플로우
+
+### Python 라이브러리 선택 가이드
+
+| 상황 | 추천 라이브러리 | 특징 |
+|------|-----------|------|
+| 대량 데이터 처리, 분석 | **pandas** | 쉽고 빠름, 서식 지정은 제한적 |
+| 복잡한 서식, 수식, 차트 | **openpyxl** | 세밀한 제어 가능, 속도는 pandas보다 느림 |
+| 기존 수식 유지하며 편집 | **openpyxl** | `load_workbook(data_only=False)` 필수 |
+
+### 1. pandas를 이용한 데이터 처리 (Python)
+
+```python
+import pandas as pd
+
+# 읽기
+df = pd.read_excel('data.xlsx')
+
+# 처리 (예: 필터링)
+filtered_df = df[df['매출'] > 1000000]
+
+# 쓰기
+filtered_df.to_excel('result.xlsx', index=False)
+```
+
+### 2. openpyxl을 이용한 상세 제어 (Python)
+
+```python
+from openpyxl import Workbook, load_workbook
+from openpyxl.styles import Font, PatternFill, Alignment
+
+# 새 통합 문서 생성
+wb = Workbook()
+ws = wb.active
+
+# 데이터 추가 및 서식 지정
+cell = ws['A1']
+cell.value = "매출 요약"
+cell.font = Font(bold=True, size=12)
+cell.fill = PatternFill(start_color="D9EAD3", fill_type="solid")
+cell.alignment = Alignment(horizontal="center")
+
+# 수식 추가
+ws['B2'] = "=SUM(B3:B10)"
+
+wb.save('report.xlsx')
+```
+
+---
+
+## 검증 체크리스트 (Validation Checklist)
+
+파일을 저장하기 전에 다음 사항을 확인하세요:
+1. 모든 시트의 이름이 명확한가?
+2. 인쇄 영역이 올바르게 설정되어 있는가? (필요한 경우)
+3. 불필요한 빈 행이나 열이 제거되었는가?
+4. 수식이 올바른 범위를 참조하고 있는가?
+5. 첫 번째 행에 필터가 적용되어 있는가? (데이터 테이블인 경우)
+
+---
+
+## 일반적인 작업 사례
+
+### CSV/TSV를 Excel로 변환
+```python
+import pandas as pd
+df = pd.read_csv('data.csv')
+df.to_excel('data.xlsx', index=False)
+```
+
+### 여러 엑셀 파일 합치기
+```python
+import pandas as pd
+import glob
+
+all_files = glob.glob("sales_*.xlsx")
+li = []
+
+for filename in all_files:
+    df = pd.read_excel(filename)
+    li.append(df)
+
+frame = pd.concat(li, axis=0, ignore_index=True)
+frame.to_excel("combined_sales.xlsx", index=False)
+```
 
 # Requirements for Outputs
 

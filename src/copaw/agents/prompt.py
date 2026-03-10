@@ -172,12 +172,12 @@ def build_system_prompt_from_working_dir() -> str:
 
 
 def build_bootstrap_guidance(
-    language: str = "zh",
+    language: str = "ko",
 ) -> str:
     """Build bootstrap guidance message for first-time setup.
 
     Args:
-        language: Language code (en/zh)
+        language: Language code (en/zh/ko)
 
     Returns:
         Formatted bootstrap guidance message
@@ -200,23 +200,41 @@ If the user explicitly says they want to skip the bootstrap or just want their q
 
 **Original user message:**
 """
-    else:  # zh
-        return """# 🌟 引导模式已激活
+    elif language == "ko":
+        return """# 🌟 가이드 모드 활성화됨
 
-**重要：你正处于首次设置模式。**
+**중요: 현재 처음 설정 모드에 있습니다.**
 
-你的工作目录中存在 `BOOTSTRAP.md` 文件。这意味着你应该引导用户完成引导流程，以建立你的身份和偏好。
+작업 디렉토리에 `BOOTSTRAP.md` 파일이 존재합니다. 이는 당신의 정체성과 선호도를 설정하기 위해 사용자를 가이드 프로세스로 안내해야 함을 의미합니다.
 
-**你的任务：**
-1. 阅读 BOOTSTRAP.md 文件，友好地表示初次见面，引导用户完成引导流程。
-2. 按照BOOTSTRAP.md 里面的指示执行。例如，帮助用户定义你的身份、他们的偏好，并建立工作关系
-3. 按照指南中的描述创建和更新必要的文件（PROFILE.md、MEMORY.md 等）
-4. 完成引导流程后，按照指示删除 BOOTSTRAP.md
+**당신의 임무:**
+1. BOOTSTRAP.md 파일을 읽고, 사용자에게 첫 만남의 인사를 따뜻하게 건네며 가이드 프로세스를 안내하세요.
+2. BOOTSTRAP.md 내의 지침을 따르세요. 예를 들어, 사용자가 당신의 정체성과 그들의 선호도를 정의하고 업무 관계를 구축하도록 도와주세요.
+3. 가이드에 설명된 대로 필요한 파일(PROFILE.md, MEMORY.md 등)을 생성하고 업데이트하세요.
+4. 가이드 프로세스를 마친 후, 지침에 따라 BOOTSTRAP.md를 삭제하세요.
 
-**如果用户希望跳过：**
-如果用户明确表示想跳过引导，那就继续回答下面的原始问题。你随时可以帮助他们完成引导。
+**사용자가 건너뛰기를 원하는 경우:**
+사용자가 명시적으로 가이드를 건너뛰고 싶어하거나 질문에 직접 답하기를 원하는 경우, 아래의 원래 질문에 답하세요. 나중에 언제든지 가이드를 도와줄 수 있습니다.
 
-**用户的原始消息：**
+**사용자의 원래 메시지:**
+"""
+    else:
+        return """# 🌟 BOOTSTRAP MODE ACTIVATED
+
+**IMPORTANT: You are in first-time setup mode.**
+
+A `BOOTSTRAP.md` file exists in your working directory. This means you should guide the user through the bootstrap process to establish your identity and preferences.
+
+**Your task:**
+1. Read the BOOTSTRAP.md file, greet the user warmly as a first meeting, and guide them through the bootstrap process.
+2. Follow the instructions in BOOTSTRAP.md. For example, help the user define your identity, their preferences, and establish the working relationship.
+3. Create and update the necessary files (PROFILE.md, MEMORY.md, etc.) as described in the guide.
+4. After completing the bootstrap process, delete BOOTSTRAP.md as instructed.
+
+**If the user wants to skip:**
+If the user explicitly says they want to skip the bootstrap or just want their question answered directly, then proceed to answer their original question below. You can always help them bootstrap later.
+
+**Original user message:**
 """
 
 

@@ -1,6 +1,6 @@
 ---
 name: file_reader
-description: "Read and summarize text-based file types only. Prefer read_file for text formats; use execute_shell_command for type detection when needed. PDF/Office/images/archives are handled by other skills."
+description: "텍스트 기반 파일 형식만 읽고 요약합니다. 텍스트 형식에는 read_file을 우선 사용하고, 필요시 파일 유형 감지를 위해 execute_shell_command를 사용하세요. PDF/Office/이미지/압축 파일은 전용 스킬에서 처리합니다."
 metadata:
   {
     "copaw":
@@ -8,54 +8,55 @@ metadata:
         "emoji": "📄",
         "requires": {}
       }
-  }
+    }
 ---
-# File Reader Toolbox
+# 파일 리더 도구함 (File Reader Toolbox)
 
-Use this skill when the user asks to read or summarize local text-based files. PDFs, Office documents, images, audio, and video are out of scope for this skill and should be handled by their dedicated skills/tools.
+사용자가 로컬 텍스트 기반 파일을 읽거나 요약해 달라고 요청할 때 이 스킬을 사용하세요. PDF, Office 문서, 이미지, 오디오, 비디오는 이 스킬의 범위를 벗어나며 각각의 전용 스킬이나 도구에서 처리해야 합니다.
 
-## Quick Type Check
+## 빠른 유형 확인
 
-Use a type probe before reading:
+파일을 읽기 전에 유형을 먼저 확인하세요:
 
 ```bash
 file -b --mime-type "/path/to/file"
 ```
 
-If the file is large, avoid dumping the whole content; extract a small, relevant portion and summarize.
+파일이 너무 크다면 전체 내용을 출력하지 말고, 관련된 일부분만 추출하여 요약하세요.
 
-## Text-Based Files (use read_file)
+## 텍스트 기반 파일 (read_file 사용)
 
-Preferred for: `.txt`, `.md`, `.json`, `.yaml/.yml`, `.csv/.tsv`, `.log`, `.sql`, `ini`, `toml`, `py`, `js`, `html`, `xml` source code.
+다음에 권장됩니다: `.txt`, `.md`, `.json`, `.yaml/.yml`, `.csv/.tsv`, `.log`, `.sql`, `ini`, `toml`, `py`, `js`, `html`, `xml` 소스 코드 등.
 
-Steps:
+단계:
 
-1. Use `read_file` to fetch content.
-2. Summarize key sections or show the relevant slice requested by the user.
-3. For JSON/YAML, list top-level keys and important fields.
-4. For CSV/TSV, show header + first few rows, then summarize columns.
+1. `read_file`을 사용하여 내용을 가져옵니다.
+2. 주요 섹션을 요약하거나 사용자가 요청한 특정 부분을 보여줍니다.
+3. JSON/YAML의 경우, 최상위 키와 중요한 필드 목록을 나열합니다.
+4. CSV/TSV의 경우, 헤더와 처음 몇 줄을 보여준 뒤 각 열의 의미를 요약합니다.
 
-## Large Logs
+## 대용량 로그 파일
 
-If the file is huge, use a tail window:
+파일이 매우 큰 경우 `tail`을 사용하여 끝부분만 확인하세요:
 
 ```bash
 tail -n 200 "/path/to/file.log"
 ```
 
-Summarize the last errors/warnings and notable patterns.
+마지막 에러/경고 및 주목할 만한 패턴을 요약합니다.
 
-## Out of Scope
+## 범위 외 (Out of Scope)
 
-Do not handle the following in this skill (they are covered by other skills):
+다음은 이 스킬에서 처리하지 않습니다 (다른 전용 스킬에서 처리):
 
 - PDF
 - Office (docx/xlsx/pptx)
-- Images
-- Audio/Video
+- 이미지 (Images)
+- 오디오/비디오 (Audio/Video)
 
-## Safety and Behavior
+## 안전 및 동작 지침
 
-- Never execute untrusted files.
-- Prefer reading the smallest portion necessary.
-- If a tool is missing, explain the limitation and ask the user for an alternate format.
+- 신뢰할 수 없는 파일을 실행하지 마세요.
+- 필요한 최소한의 부분만 읽는 것을 권장합니다.
+- 특정 도구가 없는 경우, 제한 사항을 설명하고 사용자에게 대체 형식을 요청하세요.
+- **한국어 처리**: 한국어 텍스트 파일(UTF-8)을 읽을 때 한글이 깨지지 않도록 유의하세요.

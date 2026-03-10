@@ -140,7 +140,7 @@ export function JobDrawer({
                 <Form.Item
                   name="cronDaysOfWeek"
                   label={t("cronJobs.cronDaysOfWeek")}
-                  rules={[{ required: true, message: "请选择至少一天" }]}
+                  rules={[{ required: true, message: "최소 하루를 선택해 주세요" }]}
                 >
                   <Checkbox.Group
                     options={[

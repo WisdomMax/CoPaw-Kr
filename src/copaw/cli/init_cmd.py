@@ -79,6 +79,12 @@ DEFAULT_HEARTBEAT_MDS = {
 - Check tasks for blockers
 - Light check-in if quiet for 8h
 """,
+    "ko": """# 하트비트 체크리스트
+- 편지함에서 긴급 메일 확인
+- 향후 2시간 동안의 일정 확인
+- 할 일 목록에서 지연된 항목 확인
+- 8시간 이상 조용할 경우 가벼운 체크인 수행
+""",
     "ru": """# Heartbeat checklist
 - Проверить входящие на срочные письма
 - Просмотреть календарь на ближайшие 2 часа
@@ -206,7 +212,7 @@ def init_cmd(force: bool, use_defaults: bool, accept_security: bool) -> None:
         if not use_defaults:
             language = prompt_choice(
                 "Select language for MD files:",
-                options=["zh", "en", "ru"],
+                options=["zh", "en", "ko", "ru"],
                 default=existing.agents.language,
             )
             existing.agents.language = language
