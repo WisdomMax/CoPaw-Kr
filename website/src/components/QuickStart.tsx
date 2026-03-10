@@ -26,6 +26,11 @@ const DESKTOP_RELEASES_URL = "https://github.com/agentscope-ai/CoPaw/releases";
 
 const COMMANDS = {
   pip: ["pip install copaw", "copaw init --defaults", "copaw app"],
+  github: [
+    "pip install git+https://github.com/WisdomMax/CoPaw-Kr.git",
+    "copaw init --defaults",
+    "copaw app",
+  ],
   scriptMac: [
     "curl -fsSL https://copaw.agentscope.io/install.sh | bash",
     "copaw init --defaults",
@@ -134,6 +139,7 @@ function CodeBlock({ lines, copied, onCopy, lang }: CodeBlockProps) {
 
 export function QuickStart({ config, lang }: QuickStartProps) {
   const [selectedMethod, setSelectedMethod] = useState<InstallMethod>("pip");
+  const [pipVariant, setPipVariant] = useState<"pip" | "github">("github");
   const [scriptPlatform, setScriptPlatform] = useState<ScriptPlatform>("mac");
   const [scriptWinVariant, setScriptWinVariant] =
     useState<ScriptWindowsVariant>("cmd");
@@ -348,14 +354,64 @@ export function QuickStart({ config, lang }: QuickStartProps) {
             {methodConfig[selectedMethod].desc}
           </p>
 
-          {/* pip 설치 콘텐츠 */}
+          {/* pip / GitHub 설치 콘텐츠 */}
           {selectedMethod === "pip" && (
-            <CodeBlock
-              lines={COMMANDS.pip}
-              copied={copiedId === "pip"}
-              onCopy={() => handleCopy(COMMANDS.pip.join("\n"), "pip")}
-              lang={lang}
-            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "var(--space-3)",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  gap: "var(--space-2)",
+                  padding: "var(--space-1)",
+                  background: "var(--bg)",
+                  borderRadius: "0.5rem",
+                  width: "fit-content",
+                }}
+              >
+                {(["github", "pip"] as const).map((variant) => (
+                  <button
+                    key={variant}
+                    type="button"
+                    onClick={() => setPipVariant(variant)}
+                    aria-pressed={pipVariant === variant}
+                    className={`quickstart-tab quickstart-tab-small ${pipVariant === variant ? "active" : ""
+                      }`}
+                  >
+                    {variant === "github" ? "GitHub (권장)" : "pip (원본)"}
+                  </button>
+                ))}
+              </div>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "0.8125rem",
+                  color: "var(--text-muted)",
+                }}
+              >
+                {pipVariant === "github"
+                  ? t(lang, "quickstart.desc.pip.github")
+                  : t(lang, "quickstart.desc.pip.origin")}
+              </p>
+              <CodeBlock
+                lines={pipVariant === "github" ? COMMANDS.github : COMMANDS.pip}
+                copied={copiedId === "pip"}
+                onCopy={() =>
+                  handleCopy(
+                    (pipVariant === "github"
+                      ? COMMANDS.github
+                      : COMMANDS.pip
+                    ).join("\n"),
+                    "pip"
+                  )
+                }
+                lang={lang}
+              />
+            </div>
           )}
 
           {/* 스크립트 설치 콘텐츠 */}
