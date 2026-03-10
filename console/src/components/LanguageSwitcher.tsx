@@ -31,7 +31,7 @@ export default function LanguageSwitcher() {
     },
     {
       key: "zh",
-      label: "중국어 간체",
+      label: "简体中文",
       onClick: () => changeLanguage("zh"),
     },
     {
@@ -45,7 +45,7 @@ export default function LanguageSwitcher() {
     ko: "한국어",
     en: "English",
     ru: "Русский",
-    zh: "중국어 간체",
+    zh: "简体中文",
     ja: "日本語",
   };
 
