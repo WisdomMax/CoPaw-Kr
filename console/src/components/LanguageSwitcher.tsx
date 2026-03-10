@@ -10,7 +10,7 @@ export default function LanguageSwitcher() {
 
   const changeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
-    localStorage.setItem("language", lang);
+    localStorage.setItem("console-lang-v2", lang);
   };
 
   const items: MenuProps["items"] = [

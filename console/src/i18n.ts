@@ -23,8 +23,10 @@ const resources = {
   },
 };
 
+const LANG_KEY = "console-lang-v2";
+
 const getInitialLang = () => {
-  const v = localStorage.getItem("language");
+  const v = localStorage.getItem(LANG_KEY);
   if (v && resources[v as keyof typeof resources]) return v;
 
   const navLang = navigator.language.toLowerCase();
