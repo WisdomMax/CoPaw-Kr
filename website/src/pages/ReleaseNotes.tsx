@@ -18,7 +18,7 @@ interface ReleaseNote {
 interface ReleaseNotesProps {
   config: SiteConfig;
   lang: Lang;
-  onLangClick: () => void;
+  onLangChange: (next: Lang) => void;
 }
 
 const RELEASE_NOTES_DATA: { version: string; date?: string }[] = [
@@ -30,7 +30,7 @@ const RELEASE_NOTES_DATA: { version: string; date?: string }[] = [
   { version: "v0.0.4" },
 ];
 
-export function ReleaseNotes({ config, lang, onLangClick }: ReleaseNotesProps) {
+export function ReleaseNotes({ config, lang, onLangChange }: ReleaseNotesProps) {
   const [releases, setReleases] = useState<ReleaseNote[]>([]);
   const [expandedSet, setExpandedSet] = useState<Set<number>>(
     () => new Set([0]),
@@ -135,7 +135,7 @@ export function ReleaseNotes({ config, lang, onLangClick }: ReleaseNotesProps) {
         <Nav
           projectName={config.projectName}
           lang={lang}
-          onLangClick={onLangClick}
+          onLangChange={onLangChange}
           docsPath={config.docsPath}
           repoUrl={config.repoUrl}
         />
@@ -159,7 +159,7 @@ export function ReleaseNotes({ config, lang, onLangClick }: ReleaseNotesProps) {
       <Nav
         projectName={config.projectName}
         lang={lang}
-        onLangClick={onLangClick}
+        onLangChange={onLangChange}
         docsPath={config.docsPath}
         repoUrl={config.repoUrl}
       />

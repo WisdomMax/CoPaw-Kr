@@ -28,7 +28,8 @@ function TestimonialCard({
   lang: Lang;
   style?: React.CSSProperties;
 }) {
-  const quote = lang === "zh" ? item.quoteZh : item.quoteEn;
+  const quote =
+    lang === "ko" ? item.quoteKo : lang === "zh" ? item.quoteZh : item.quoteEn;
   return (
     <a
       href={item.url}

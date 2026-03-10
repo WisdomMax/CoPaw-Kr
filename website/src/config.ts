@@ -2,6 +2,7 @@ export interface SiteConfig {
   projectName: string;
   projectTaglineEn: string;
   projectTaglineZh: string;
+  projectTaglineKo: string;
   repoUrl: string;
   docsPath: string;
   /** When true or omitted, show Testimonials on homepage. */
@@ -17,6 +18,7 @@ const defaultConfig: SiteConfig = {
   projectName: "CoPaw",
   projectTaglineEn: "Works for you, grows with you",
   projectTaglineZh: "懂你所需，伴你左右",
+  projectTaglineKo: "당신이 필요한 것을 이해하고, 항상 곁에 있습니다",
   repoUrl: "https://github.com/agentscope-ai/CoPaw",
   docsPath: "/docs/",
   showTestimonials: true,

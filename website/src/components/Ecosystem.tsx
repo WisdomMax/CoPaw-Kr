@@ -15,43 +15,79 @@ const ITEMS: Array<{
   icon: React.ComponentType<LucideProps>;
   labelZh: string;
   labelEn: string;
+  labelKo: string;
 }> = [
-  {
-    key: "imessage",
-    icon: MessageSquare,
-    labelZh: "iMessage",
-    labelEn: "iMessage",
-  },
-  {
-    key: "discord",
-    icon: MessageSquare,
-    labelZh: "Discord",
-    labelEn: "Discord",
-  },
-  {
-    key: "dingtalk",
-    icon: MessageSquare,
-    labelZh: "钉钉",
-    labelEn: "DingTalk",
-  },
-  {
-    key: "feishu",
-    icon: MessageSquare,
-    labelZh: "飞书",
-    labelEn: "Feishu",
-  },
-  { key: "qq", icon: MessageSquare, labelZh: "QQ", labelEn: "QQ" },
-  {
-    key: "agentscope",
-    icon: Puzzle,
-    labelZh: "AgentScope",
-    labelEn: "AgentScope",
-  },
-  { key: "python", icon: Code2, labelZh: "Python", labelEn: "Python" },
-  { key: "cron", icon: CalendarClock, labelZh: "Cron", labelEn: "Cron" },
-  { key: "api", icon: Server, labelZh: "HTTP API", labelEn: "HTTP API" },
-  { key: "skills", icon: Zap, labelZh: "Skills", labelEn: "Skills" },
-];
+    {
+      key: "imessage",
+      icon: MessageSquare,
+      labelZh: "iMessage",
+      labelEn: "iMessage",
+      labelKo: "iMessage",
+    },
+    {
+      key: "discord",
+      icon: MessageSquare,
+      labelZh: "Discord",
+      labelEn: "Discord",
+      labelKo: "Discord",
+    },
+    {
+      key: "dingtalk",
+      icon: MessageSquare,
+      labelZh: "钉钉",
+      labelEn: "DingTalk",
+      labelKo: "딩딩 (DingTalk)",
+    },
+    {
+      key: "feishu",
+      icon: MessageSquare,
+      labelZh: "飞书",
+      labelEn: "Feishu",
+      labelKo: "페이슈 (Feishu)",
+    },
+    {
+      key: "qq",
+      icon: MessageSquare,
+      labelZh: "QQ",
+      labelEn: "QQ",
+      labelKo: "QQ",
+    },
+    {
+      key: "agentscope",
+      icon: Puzzle,
+      labelZh: "AgentScope",
+      labelEn: "AgentScope",
+      labelKo: "AgentScope",
+    },
+    {
+      key: "python",
+      icon: Code2,
+      labelZh: "Python",
+      labelEn: "Python",
+      labelKo: "Python",
+    },
+    {
+      key: "cron",
+      icon: CalendarClock,
+      labelZh: "Cron",
+      labelEn: "Cron",
+      labelKo: "정기 작업 (Cron)",
+    },
+    {
+      key: "api",
+      icon: Server,
+      labelZh: "HTTP API",
+      labelEn: "HTTP API",
+      labelKo: "HTTP API",
+    },
+    {
+      key: "skills",
+      icon: Zap,
+      labelZh: "Skills",
+      labelEn: "Skills",
+      labelKo: "스킬 (Skills)",
+    },
+  ];
 
 interface EcosystemProps {
   lang: Lang;
@@ -98,7 +134,7 @@ export function Ecosystem({ lang, delay = 0 }: EcosystemProps) {
           gap: "var(--space-2)",
         }}
       >
-        {ITEMS.map(({ key, icon: Icon, labelZh, labelEn }) => (
+        {ITEMS.map(({ key, icon: Icon, labelZh, labelEn, labelKo }) => (
           <span
             key={key}
             style={{
@@ -114,7 +150,7 @@ export function Ecosystem({ lang, delay = 0 }: EcosystemProps) {
             }}
           >
             <Icon size={16} strokeWidth={1.5} aria-hidden />
-            {lang === "zh" ? labelZh : labelEn}
+            {lang === "ko" ? labelKo : lang === "zh" ? labelZh : labelEn}
           </span>
         ))}
       </div>

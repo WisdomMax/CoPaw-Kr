@@ -41,7 +41,7 @@ function AgentScopeLogo() {
 interface NavProps {
   projectName: string;
   lang: Lang;
-  onLangClick: () => void;
+  onLangChange: (next: Lang) => void;
   docsPath: string;
   repoUrl: string;
 }
@@ -49,26 +49,33 @@ interface NavProps {
 export function Nav({
   projectName,
   lang,
-  onLangClick,
+  onLangChange,
   docsPath,
   repoUrl: _repoUrl,
 }: NavProps) {
   const [open, setOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
   const linkClass =
     "nav-item text-[var(--text-muted)] hover:text-[var(--text)] transition-colors";
   const docsBase = docsPath.replace(/\/$/, "") || "/docs";
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (moreRef.current && !moreRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      if (moreRef.current && !moreRef.current.contains(target)) {
         setMoreOpen(false);
+      }
+      if (langRef.current && !langRef.current.contains(target)) {
+        setLangOpen(false);
       }
     };
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && moreOpen) {
+      if (event.key === "Escape") {
         setMoreOpen(false);
+        setLangOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -77,7 +84,14 @@ export function Nav({
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
     };
-  }, [moreOpen]);
+  }, []);
+
+  const LANGUAGES: { code: Lang; label: string }[] = [
+    { code: "ko", label: "한국어" },
+    { code: "en", label: "English" },
+    { code: "zh", label: "简体中文" },
+  ];
+
   return (
     <header
       style={{
@@ -185,20 +199,63 @@ export function Nav({
             <BookOpen size={18} strokeWidth={1.5} aria-hidden />
             <span>{t(lang, "nav.docs")}</span>
           </Link>
-          <button
-            type="button"
-            onClick={onLangClick}
-            className={linkClass}
-            style={{
-              background: "none",
-              border: "none",
-              padding: "var(--space-1) var(--space-2)",
-            }}
-            aria-label={t(lang, "nav.lang")}
-          >
-            <Globe size={18} strokeWidth={1.5} aria-hidden />
-            <span>{t(lang, "nav.lang")}</span>
-          </button>
+          <div ref={langRef} style={{ position: "relative" }}>
+            <button
+              type="button"
+              onClick={() => setLangOpen((o) => !o)}
+              className={linkClass}
+              style={{
+                background: "none",
+                border: "none",
+                padding: "var(--space-1) var(--space-2)",
+              }}
+              aria-expanded={langOpen}
+              aria-haspopup="true"
+              aria-label={t(lang, "nav.lang")}
+            >
+              <Globe size={18} strokeWidth={1.5} aria-hidden />
+              <span>{t(lang, "nav.lang")}</span>
+            </button>
+            {langOpen && (
+              <div
+                role="menu"
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 0.5rem)",
+                  right: 0,
+                  background: "var(--surface)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "0.5rem",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  minWidth: "8rem",
+                  zIndex: 50,
+                  overflow: "hidden",
+                }}
+              >
+                {LANGUAGES.map((l) => (
+                  <button
+                    key={l.code}
+                    role="menuitem"
+                    className="nav-dropdown-item"
+                    style={{
+                      width: "100%",
+                      textAlign: "left",
+                      background: lang === l.code ? "var(--bg)" : "none",
+                      border: "none",
+                      color: lang === l.code ? "var(--text)" : "var(--text-muted)",
+                      fontWeight: lang === l.code ? 600 : 400,
+                    }}
+                    onClick={() => {
+                      onLangChange(l.code);
+                      setLangOpen(false);
+                    }}
+                  >
+                    {l.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <a
             href="https://github.com/agentscope-ai/CoPaw"
             target="_blank"
@@ -214,9 +271,7 @@ export function Nav({
             target="_blank"
             rel="noopener noreferrer"
             className={linkClass}
-            title={
-              lang === "zh" ? "基于 AgentScope 打造" : "Built on AgentScope"
-            }
+            title={t(lang, "nav.agentscopeDesc")}
             aria-label={t(lang, "nav.agentscopeTeam")}
             style={{
               display: "inline-flex",
@@ -286,7 +341,9 @@ export function Nav({
           type="button"
           className={linkClass}
           onClick={() => {
-            onLangClick();
+            // 모바일에서는 간단하게 다음 언어로 순환하거나 혹은 드롭다운 대신 토글 유지
+            const nextMap: Record<Lang, Lang> = { ko: "en", en: "zh", zh: "ko" };
+            onLangChange(nextMap[lang]);
             setOpen(false);
           }}
           style={{ background: "none", border: "none", textAlign: "left" }}
@@ -309,7 +366,7 @@ export function Nav({
           rel="noopener noreferrer"
           className={linkClass}
           onClick={() => setOpen(false)}
-          title={lang === "zh" ? "基于 AgentScope 打造" : "Built on AgentScope"}
+          title={t(lang, "nav.agentscopeDesc")}
           aria-label={t(lang, "nav.agentscopeTeam")}
           style={{
             display: "inline-flex",

@@ -288,7 +288,7 @@ export function QuickStart({ config, lang }: QuickStartProps) {
             "0 4px 16px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.02)",
         }}
       >
-        {/* 顶部方法选择 tabs */}
+        {/* 상단 설치 방법 선택 탭 */}
         <div
           style={{
             display: "grid",
@@ -334,9 +334,9 @@ export function QuickStart({ config, lang }: QuickStartProps) {
           })}
         </div>
 
-        {/* 内容区域 */}
+        {/* 콘텐츠 영역 */}
         <div style={{ padding: "var(--space-5)" }}>
-          {/* 描述 */}
+          {/* 설명 리스트 */}
           <p
             style={{
               margin: "0 0 var(--space-4)",
@@ -348,7 +348,7 @@ export function QuickStart({ config, lang }: QuickStartProps) {
             {methodConfig[selectedMethod].desc}
           </p>
 
-          {/* pip 内容 */}
+          {/* pip 설치 콘텐츠 */}
           {selectedMethod === "pip" && (
             <CodeBlock
               lines={COMMANDS.pip}
@@ -358,7 +358,7 @@ export function QuickStart({ config, lang }: QuickStartProps) {
             />
           )}
 
-          {/* 脚本安装内容 */}
+          {/* 스크립트 설치 콘텐츠 */}
           {selectedMethod === "script" && (
             <div
               style={{
@@ -382,9 +382,8 @@ export function QuickStart({ config, lang }: QuickStartProps) {
                     type="button"
                     onClick={() => setScriptPlatform(platform)}
                     aria-pressed={scriptPlatform === platform}
-                    className={`quickstart-tab ${
-                      scriptPlatform === platform ? "active" : ""
-                    }`}
+                    className={`quickstart-tab ${scriptPlatform === platform ? "active" : ""
+                      }`}
                   >
                     {t(lang, `quickstart.platform.${platform}`)}
                   </button>
@@ -407,9 +406,8 @@ export function QuickStart({ config, lang }: QuickStartProps) {
                       type="button"
                       onClick={() => setScriptWinVariant(variant)}
                       aria-pressed={scriptWinVariant === variant}
-                      className={`quickstart-tab quickstart-tab-small ${
-                        scriptWinVariant === variant ? "active" : ""
-                      }`}
+                      className={`quickstart-tab quickstart-tab-small ${scriptWinVariant === variant ? "active" : ""
+                        }`}
                     >
                       {t(lang, `quickstart.shell.${variant}`)}
                     </button>
@@ -422,8 +420,8 @@ export function QuickStart({ config, lang }: QuickStartProps) {
                   scriptPlatform === "mac"
                     ? COMMANDS.scriptMac
                     : scriptWinVariant === "cmd"
-                    ? COMMANDS.scriptWinCmd
-                    : COMMANDS.scriptWinPs
+                      ? COMMANDS.scriptWinCmd
+                      : COMMANDS.scriptWinPs
                 }
                 copied={
                   copiedId === `script-${scriptPlatform}-${scriptWinVariant}`
@@ -433,8 +431,8 @@ export function QuickStart({ config, lang }: QuickStartProps) {
                     (scriptPlatform === "mac"
                       ? COMMANDS.scriptMac
                       : scriptWinVariant === "cmd"
-                      ? COMMANDS.scriptWinCmd
-                      : COMMANDS.scriptWinPs
+                        ? COMMANDS.scriptWinCmd
+                        : COMMANDS.scriptWinPs
                     ).join("\n"),
                     `script-${scriptPlatform}-${scriptWinVariant}`,
                   )
@@ -444,7 +442,7 @@ export function QuickStart({ config, lang }: QuickStartProps) {
             </div>
           )}
 
-          {/* Docker 内容 */}
+          {/* Docker 설치 콘텐츠 */}
           {selectedMethod === "docker" && (
             <CodeBlock
               lines={COMMANDS.docker}
@@ -454,7 +452,7 @@ export function QuickStart({ config, lang }: QuickStartProps) {
             />
           )}
 
-          {/* 云部署内容 */}
+          {/* 클라우드 배포 콘텐츠 */}
           {selectedMethod === "cloud" && (
             <div
               style={{
@@ -478,9 +476,8 @@ export function QuickStart({ config, lang }: QuickStartProps) {
                     type="button"
                     onClick={() => setCloudVariant(variant)}
                     aria-pressed={cloudVariant === variant}
-                    className={`quickstart-tab quickstart-tab-small ${
-                      cloudVariant === variant ? "active" : ""
-                    }`}
+                    className={`quickstart-tab quickstart-tab-small ${cloudVariant === variant ? "active" : ""
+                      }`}
                   >
                     {t(lang, `quickstart.cloud.${variant}`)}
                   </button>
@@ -529,7 +526,7 @@ export function QuickStart({ config, lang }: QuickStartProps) {
             </div>
           )}
 
-          {/* 桌面应用内容 */}
+          {/* 데스크톱 앱 설치 콘텐츠 */}
           {selectedMethod === "desktop" && (
             <div
               style={{

@@ -7,11 +7,17 @@ import { Docs } from "./pages/Docs";
 import { ReleaseNotes } from "./pages/ReleaseNotes";
 import "./index.css";
 
-const LANG_KEY = "site-lang";
+const LANG_KEY = "site-lang-v2";
 
 function getStoredLang(): Lang {
   const v = localStorage.getItem(LANG_KEY);
-  return v === "en" ? "en" : "zh";
+  if (v === "en" || v === "zh" || v === "ko") return v as Lang;
+
+  // 시스템 언어 감지
+  const navLang = navigator.language.toLowerCase();
+  if (navLang.startsWith("ko")) return "ko";
+  if (navLang.startsWith("zh")) return "zh";
+  return "en";
 }
 
 export default function App() {
@@ -22,8 +28,7 @@ export default function App() {
     loadSiteConfig().then(setConfig);
   }, []);
 
-  const toggleLang = () => {
-    const next: Lang = lang === "zh" ? "en" : "zh";
+  const handleSetLang = (next: Lang) => {
     setLang(next);
     localStorage.setItem(LANG_KEY, next);
   };
@@ -48,17 +53,17 @@ export default function App() {
     <Routes>
       <Route
         path="/"
-        element={<Home config={config} lang={lang} onLangClick={toggleLang} />}
+        element={<Home config={config} lang={lang} onLangChange={handleSetLang} />}
       />
       <Route path="/docs" element={<Navigate to="/docs/intro" replace />} />
       <Route
         path="/docs/:slug"
-        element={<Docs config={config} lang={lang} onLangClick={toggleLang} />}
+        element={<Docs config={config} lang={lang} onLangChange={handleSetLang} />}
       />
       <Route
         path="/release-notes"
         element={
-          <ReleaseNotes config={config} lang={lang} onLangClick={toggleLang} />
+          <ReleaseNotes config={config} lang={lang} onLangChange={handleSetLang} />
         }
       />
     </Routes>

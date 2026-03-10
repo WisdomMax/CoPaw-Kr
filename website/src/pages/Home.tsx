@@ -13,16 +13,16 @@ import { Footer } from "../components/Footer";
 interface HomeProps {
   config: SiteConfig;
   lang: Lang;
-  onLangClick: () => void;
+  onLangChange: (next: Lang) => void;
 }
 
-export function Home({ config, lang, onLangClick }: HomeProps) {
+export function Home({ config, lang, onLangChange }: HomeProps) {
   return (
     <>
       <Nav
         projectName={config.projectName}
         lang={lang}
-        onLangClick={onLangClick}
+        onLangChange={onLangChange}
         docsPath={config.docsPath}
         repoUrl={config.repoUrl}
       />
@@ -30,7 +30,11 @@ export function Home({ config, lang, onLangClick }: HomeProps) {
         <Hero
           projectName={config.projectName}
           tagline={
-            lang === "zh" ? config.projectTaglineZh : config.projectTaglineEn
+            lang === "ko"
+              ? config.projectTaglineKo
+              : lang === "zh"
+                ? config.projectTaglineZh
+                : config.projectTaglineEn
           }
           lang={lang}
           docsPath={config.docsPath}

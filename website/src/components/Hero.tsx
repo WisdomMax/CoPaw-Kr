@@ -184,9 +184,7 @@ export function Hero({
             fontWeight: 500,
           }}
         >
-          {lang === "zh"
-            ? "向下滚动查看快速开始"
-            : "Scroll down for quick start"}
+          {t(lang, "hero.scrollHint")}
         </p>
       </motion.div>
     </motion.section>

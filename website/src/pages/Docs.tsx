@@ -235,6 +235,26 @@ const ALL_SLUGS = [
 ];
 
 const DOC_TITLES: Record<Lang, Record<string, string>> = {
+  ko: {
+    "docs.intro": "프로젝트 소개",
+    "docs.quickstart": "빠른 시작",
+    "docs.desktop": "데스크톱 앱",
+    "docs.console": "콘솔",
+    "docs.models": "모델",
+    "docs.channels": "채널 설정",
+    "docs.heartbeat": "하트비트",
+    "docs.cli": "CLI",
+    "docs.skills": "Skills",
+    "docs.mcp": "MCP",
+    "docs.memory": "기억",
+    "docs.compact": "압축",
+    "docs.config": "설정 및 작업 디렉토리",
+    "docs.commands": "마법 명령어",
+    "docs.faq": "FAQ 자주 묻는 질문",
+    "docs.community": "피드백 및 교류",
+    "docs.contributing": "오픈소스 및 기여",
+    "docs.roadmap": "로드맵",
+  },
   zh: {
     "docs.intro": "项目介绍",
     "docs.quickstart": "快速开始",
@@ -280,10 +300,10 @@ const DOC_TITLES: Record<Lang, Record<string, string>> = {
 interface DocsProps {
   config: SiteConfig;
   lang: Lang;
-  onLangClick: () => void;
+  onLangChange: (next: Lang) => void;
 }
 
-export function Docs({ config, lang, onLangClick }: DocsProps) {
+export function Docs({ config, lang, onLangChange }: DocsProps) {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -348,7 +368,7 @@ export function Docs({ config, lang, onLangClick }: DocsProps) {
     }
     setContent("");
     let cancelled = false;
-    const langSuffix = lang === "zh" ? "zh" : "en";
+    const langSuffix = lang === "ko" ? "ko" : lang === "zh" ? "zh" : "en";
     const base = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "") || "";
     const url = `${base}/docs/${activeSlug}.${langSuffix}.md`;
     fetch(url)
@@ -359,7 +379,7 @@ export function Docs({ config, lang, onLangClick }: DocsProps) {
           setContent(text);
           return;
         }
-        return fetch(`${base}/docs/${activeSlug}.md`).then((r) =>
+        return fetch(`${base}/docs/${activeSlug}.en.md`).then((r) =>
           r.ok ? r.text() : "",
         );
       })
@@ -425,7 +445,7 @@ export function Docs({ config, lang, onLangClick }: DocsProps) {
       <Nav
         projectName={config.projectName}
         lang={lang}
-        onLangClick={onLangClick}
+        onLangChange={onLangChange}
         docsPath={config.docsPath}
         repoUrl={config.repoUrl}
       />
@@ -714,8 +734,8 @@ export function Docs({ config, lang, onLangClick }: DocsProps) {
                             );
                             if (isVideo) {
                               return (
-                                <video src={src ?? undefined} controls>
-                                  {alt ?? "您的浏览器不支持 video 标签。"}
+                                <video src={src ?? undefined} controls title={alt ?? ""}>
+                                  {alt}
                                 </video>
                               );
                             }
